@@ -1,0 +1,84 @@
+﻿
+<section id="@($"section-{Id}")">
+    <MCard>
+        <MCardTitle>
+            @Line.Name
+        </MCardTitle>
+        <MCardText>
+            <MRow>
+                <LineSubCard Sub="Line" SubChanged="SubChanged" />
+                <MasaButton Text="添加 Sub" OnClick="AddSub" Icon="mdi-plus" Class="ms-2 mt-2 mb-2" />
+                @if (Line.Any())
+                {
+                    <MSimpleTable Class="w-100  ma-3 mt-0">
+                        <thead>
+                            <tr>
+                                <th class="text-left">
+                                    Sub 名称
+                                </th>
+                                <th class="text-left">
+                                    Sub 值
+                                </th>
+                                <th class="text-left" style=" width: 110px;">
+                                    操作
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Line)
+                            {
+                                <LineSubTableBody Sub="item" SubChanged="SubChanged" SubDeleted="SubDeleted" />
+                            }
+                        </tbody>
+                    </MSimpleTable>
+                }
+
+            </MRow>
+        </MCardText>
+        <MCardActions>
+            <MSpacer />
+            <MasaButton Text="删除 Line" OnClick="DeleteLine" Icon="mdi-trash-can" Color="error" />
+        </MCardActions>
+    </MCard>
+
+    <LineSubDialog @ref="_lineSubDialog" Line="Line" SubChanged="SubChanged" LineChanged="LineChanged" />
+</section>
+
+
+@code {
+    [Parameter]
+    public ILine Line { get; set; }
+    [Parameter]
+    public int Id { get; set; }
+
+
+    [Parameter]
+    public EventCallback<ILine> LineDeleted { get; set; }
+
+    LineSubDialog _lineSubDialog;
+
+    public void SubChanged()
+    {
+        StateHasChanged();
+    }
+
+    public void SubDeleted(ISub sub)
+    {
+        Line.Remove(sub);
+    }
+
+    public void AddSub()
+    {
+        _lineSubDialog?.Refresh(null);
+    }
+
+    public void LineChanged()
+    {
+        StateHasChanged();
+    }
+
+    public async Task DeleteLine()
+    {
+        await LineDeleted.InvokeAsync(Line);
+    }
+}

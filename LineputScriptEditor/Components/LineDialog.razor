@@ -1,0 +1,65 @@
+﻿
+<MDialog @bind-Value="Dialog"
+         Width="600">
+    <MCard>
+        <MCardTitle Class="text-h5">
+            添加 Line
+        </MCardTitle>
+        <MCardText>
+            <MTextField Value="_name" Label="Line 名称" ValueChanged="NameChanged" TValue="string">
+            </MTextField>
+            <MTextField Value="_value" Label="Line 值" ValueChanged="ValueChanged" TValue="string">
+            </MTextField>
+        </MCardText>
+        <MCardActions Class="pb-4 pe-6 ps-6 pt-0">
+            <MSpacer></MSpacer>
+            <MasaButton Text="保存" OnClick="OnSave" TextStyle Icon="mdi-check" />
+        </MCardActions>
+    </MCard>
+</MDialog>
+@code {
+
+    [Parameter]
+    public EventCallback DocChanged { get; set; }
+
+    [Parameter]
+    public LpsDocument Doc { get; set; }
+
+    bool Dialog { get; set; }
+
+    string _value;
+    string _name;
+
+    public void NameChanged(string name)
+    {
+        _name = name;
+    }
+
+    public void ValueChanged(string value)
+    {
+        _value = value;
+    }
+
+    public async Task OnSave()
+    {
+        var line = new Line(_name);
+        line.SetString(_value);
+        Doc.AddLine(line);
+
+        await DocChanged.InvokeAsync();
+
+        Dialog = false;
+        StateHasChanged();
+    }
+
+    public void Refresh()
+    {
+
+        _value = null;
+        _name = null;
+
+
+        Dialog = true;
+        StateHasChanged();
+    }
+}

@@ -1,0 +1,55 @@
+﻿
+<MCard>
+    <MCardTitle>
+        @Lines?.FirstOrDefault()?.Name
+    </MCardTitle>
+    <MCardText>
+        @if (Lines != null && Lines.Any() && _names.Any())
+        {
+            <MSimpleTable Width="@("100%")">
+                <thead>
+                    <tr>
+                        <th>行</th>
+                        @foreach (var item in _names)
+                        {
+                            <th class="text-left">
+                                @item
+                            </th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Lines)
+                    {
+                        var index = Lines.IndexOf(item);
+                        <tr @key="index">
+                            <td>@item.Value</td>
+                            @foreach (var infor in _names)
+                            {
+                                <td>@(item.Find(infor)?.Value??"")</td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </MSimpleTable>
+        }
+    </MCardText>
+</MCard>
+@code {
+    [Parameter]
+    public List<ILine> Lines { get; set; }
+
+    List<string> _names { get; set; } = new List<string>();
+
+    protected override void OnParametersSet()
+    {
+        Refresh();
+    }
+
+    public void Refresh()
+    {
+        _names.Clear();
+        var line = Lines.MaxBy(s => s.Count);
+        _names.AddRange(line.Select(s => s.Name));
+    }
+}

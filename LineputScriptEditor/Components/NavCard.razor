@@ -1,0 +1,53 @@
+﻿
+@inject IJSRuntime JS
+
+<MCard Class="mx-auto"
+       MaxWidth="300"
+       Tile>
+    <MList Dense>
+        <MSubheader>大纲</MSubheader>
+        <MListItemGroup ValueChanged="ValueChanged"
+                        Color="primary">
+            @if (_list != null)
+            {
+                var _index = 0;
+                @foreach (var item in _list)
+                {
+                    <MListItem @key="_index">
+                        <MListItemContent>
+                            <MListItemTitle>@item</MListItemTitle>
+                        </MListItemContent>
+                    </MListItem>
+                    _index++;
+                }
+            }
+
+        </MListItemGroup>
+    </MList>
+</MCard>
+
+@code {
+    [Parameter]
+    public LpsDocument Doc { get; set; }
+
+    List<string> _list;
+
+    protected override void OnParametersSet()
+    {
+        Refresh();
+    }
+
+    public void Refresh()
+    {
+        if (Doc != null)
+        {
+            _list = Doc.Select(s => s.Name).ToList();
+        }
+    }
+
+    public async Task ValueChanged(StringNumber number)
+    {
+        var index = number.ToInt32();
+        await JS.InvokeAsync<string>("navigateTo", $"#section-{index}");
+    }
+}

@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.33927.210
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LineputScriptEditor", "LineputScriptEditor\LineputScriptEditor.csproj", "{8C5D7FBD-B818-40F7-A527-DB0093FDB896}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8C5D7FBD-B818-40F7-A527-DB0093FDB896}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C5D7FBD-B818-40F7-A527-DB0093FDB896}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C5D7FBD-B818-40F7-A527-DB0093FDB896}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C5D7FBD-B818-40F7-A527-DB0093FDB896}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2ED85E37-5D4C-4CC6-8FD5-77F9D280DF22}
+	EndGlobalSection
+EndGlobal

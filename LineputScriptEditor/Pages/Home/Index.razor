@@ -1,0 +1,129 @@
+﻿@page "/"
+@page "/home"
+@page "/home/index"
+
+@inject IWebHostEnvironment _webHostEnvironment
+@inject ILogger<Index> _logger
+<div style=" display: flex; gap: 1rem;">
+
+    @*<div style="display:flex">
+        <NavCard Doc="_doc" />
+    </div>*@
+
+
+    <div style=" display: flex; gap: 1rem; flex-direction: column; width: 100%;">
+
+        <div class="w-100">
+            <MCard>
+                <MCardTitle>
+                    文件
+                </MCardTitle>
+                <MCardText>
+                    <MTextField @bind-Value="_path" Label="文件路径" HideDetails="true" />
+                </MCardText>
+                <MCardActions Style=" display: flex; justify-content: flex-end;">
+                    <LineputScriptEditor.Components.MasaButton Text="打开" OnClick="OpenFile" Icon="mdi-file-edit" />
+                    <LineputScriptEditor.Components.MasaButton Text="保存" OnClick="SaveFile" Icon="mdi-content-save" />
+                </MCardActions>
+            </MCard>
+        </div>
+
+
+        @if (_doc != null)
+        {
+            var lines = GetLines();
+            @foreach (var item in lines)
+            {
+                <div class="w-100">
+                    <LineCard Line="item" LineDeleted="LineDeleted" Id="lines.IndexOf(item)" />
+                </div>
+
+            }
+            <div class="w-100">
+                <MCard>
+                    <MCardTitle>
+                        这里是文件的末尾，下方合并了相同名称的 Line 便于查看
+                    </MCardTitle>
+                    <MCardActions Class="ms-2">
+                        <LineputScriptEditor.Components.MasaButton Text="添加 Line" OnClick="AddLine" Icon="mdi-plus" />
+                        <LineputScriptEditor.Components.MasaButton Text="刷新" OnClick="DocChanged" Icon="mdi-refresh" />
+                    </MCardActions>
+                </MCard>
+            </div>
+            var sameLines = GetSameLines();
+            @foreach (var item in sameLines)
+            {
+                <div class="w-100">
+                    <LinesTableCard Lines="item" />
+                </div>
+            }
+        }
+    </div>
+
+</div>
+
+<LineDialog @ref="_lineDialog" Doc="_doc" DocChanged="DocChanged" />
+
+
+@code {
+    LpsDocument _doc;
+    string _path;
+    LineDialog _lineDialog;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _path = Path.Combine(_webHostEnvironment.WebRootPath, "info.lps");
+            await OpenFile();
+        }
+    }
+
+    public async Task OpenFile()
+    {
+        //读取LPS文件
+        _doc = new LpsDocument(await File.ReadAllTextAsync(_path));
+        StateHasChanged();
+    }
+
+    public async Task SaveFile()
+    {
+        await File.WriteAllTextAsync(_path, _doc.ToString());
+        await OpenFile();
+    }
+
+    public List<ILine> GetLines()
+    {
+        var lines = new List<ILine>();
+        _doc.ReadReset();
+        while (_doc.ReadCanNext())
+        {
+            var line = _doc.ReadNext();
+            lines.Add(line);
+        }
+        return lines;
+    }
+
+    public void LineDeleted(ILine line)
+    {
+        _doc.Remove(line);
+        StateHasChanged();
+    }
+
+    public List<List<ILine>> GetSameLines()
+    {
+        var lines = GetLines();
+        return lines.GroupBy(s => s.Name).Where(s => s.Count() > 1).Select(s => s.ToList()).ToList();
+    }
+
+    public void DocChanged()
+    {
+        StateHasChanged();
+    }
+
+    public void AddLine()
+    {
+        _lineDialog?.Refresh();
+    }
+
+}

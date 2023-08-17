@@ -1,0 +1,54 @@
+﻿<MButton Dark Class="@Class"
+         Loading="loading2"
+         Color="@Color" Icon="string.IsNullOrWhiteSpace(Text)&&Fab==false"
+         Text="TextStyle" Fab="Fab"
+         OnClick="OnClick2">
+    @if (string.IsNullOrWhiteSpace(Text))
+    {
+        <MIcon Dark>
+            @Icon
+        </MIcon>
+    }
+    else
+    {
+        <MIcon Left Dark>
+            @Icon
+        </MIcon>
+        @Text
+    }
+
+
+</MButton>
+
+@code {
+    [Parameter]
+    public string Icon { get; set; }
+
+    [Parameter]
+    public string Class { get; set; }
+
+    [Parameter]
+    public string Text { get; set; }
+
+    [Parameter]
+    public bool TextStyle { get; set; }
+
+    [Parameter]
+    public bool Fab { get; set; }
+
+    [Parameter]
+    public string Color { get; set; } = "primary";
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+
+    private bool loading2 = false;
+    private async void OnClick2()
+    {
+        loading2 = true;
+        await InvokeAsync(StateHasChanged);
+        await OnClick.InvokeAsync();
+        loading2 = false;
+        await InvokeAsync(StateHasChanged);
+    }
+}

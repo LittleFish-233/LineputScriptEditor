@@ -1,0 +1,40 @@
+﻿
+<MCol Cols="12" Style="display: flex; gap: 1rem; align-items: center; ">
+    <MTextField Value="_name" Label="Line 名称" HideDetails="true" ValueChanged="NameChanged" TValue="string">
+    </MTextField>
+    <MTextField Value="_value" Label="Line 值" HideDetails="true" ValueChanged="ValueChanged" TValue="string">
+    </MTextField>
+</MCol>
+
+@code {
+    [Parameter]
+    public ISub Sub { get; set; }
+
+    [Parameter]
+    public EventCallback<ISub> SubChanged { get; set; }
+
+    string _value;
+    string _name;
+
+    bool _selected;
+
+    protected override void OnParametersSet()
+    {
+        _value = Sub.GetString();
+        _name = Sub.Name;
+    }
+
+    public async Task NameChanged(string name)
+    {
+        _name = name;
+        Sub.Name=name;
+        await  SubChanged.InvokeAsync();
+    }
+
+    public async Task ValueChanged(string value)
+    {
+        _value = value;
+        Sub.SetString(value);
+        await SubChanged.InvokeAsync();
+    }
+}

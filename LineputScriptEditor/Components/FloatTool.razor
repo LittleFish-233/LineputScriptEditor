@@ -1,0 +1,17 @@
+﻿@inject NavigationManager NavigationManager
+
+<div style=" position: fixed; z-index: 4; bottom: 7rem; right: 2rem;">
+    <div style=" display: flex; flex-direction: column;">
+        <MasaButton Icon="mdi-transfer-up" OnClick="OnClickFly" Fab/>
+    </div>
+
+</div>
+
+@code {
+
+    public void OnClickFly()
+    {
+        NavigationManager.NavigateTo(NavigationManager.Uri, false, true);
+    }
+
+}

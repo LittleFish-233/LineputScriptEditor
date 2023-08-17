@@ -1,0 +1,82 @@
+﻿
+<MDialog @bind-Value="Dialog"
+         Width="600">
+    <MCard>
+        <MCardTitle Class="text-h5">
+            编辑 Sub
+        </MCardTitle>
+        <MCardText>
+            <MTextField Value="_name" Label="Sub 名称" ValueChanged="NameChanged" TValue="string">
+            </MTextField>
+            <MTextField Value="_value" Label="Sub 值" ValueChanged="ValueChanged" TValue="string">
+            </MTextField>
+        </MCardText>
+        <MCardActions Class="pb-4 pe-6 ps-6 pt-0">
+            <MSpacer></MSpacer>
+            <MasaButton Text="保存" OnClick="OnSave" TextStyle Icon="mdi-check" />
+        </MCardActions>
+    </MCard>
+</MDialog>
+@code {
+
+    ISub Sub { get; set; }
+
+    [Parameter]
+    public EventCallback SubChanged { get; set; }
+    [Parameter]
+    public EventCallback LineChanged { get; set; }
+
+    [Parameter]
+    public ILine Line { get; set; }
+
+    bool Dialog { get; set; }
+
+    string _value;
+    string _name;
+
+    public void NameChanged(string name)
+    {
+        _name = name;
+    }
+
+    public void ValueChanged(string value)
+    {
+        _value = value;
+    }
+
+    public async Task OnSave()
+    {
+        if(Sub==null)
+        {
+            Sub = new Sub(_name);
+
+            Sub.SetString(_value);
+            
+            Line.Add(Sub);
+
+            await LineChanged.InvokeAsync();
+        }
+        else
+        {
+            Sub.Name = _name;
+            Sub.SetString(_value);
+            await SubChanged.InvokeAsync();
+        }
+
+        Dialog = false;
+        StateHasChanged();
+    }
+
+    public void Refresh(ISub sub)
+    {
+        Sub = sub;
+        if(sub!=null)
+        {
+            _value = Sub.GetString();
+            _name = Sub.Name;
+        }
+
+        Dialog = true;
+        StateHasChanged();
+    }
+}

@@ -1,0 +1,26 @@
+﻿@inherits LayoutComponentBase
+
+<PageTitle>LineputScript 可视化编辑器</PageTitle>
+<MApp>
+    <MAppBar Color="primary" App Dark>
+        <MToolbarTitle>LineputScript 可视化编辑器</MToolbarTitle>
+    </MAppBar>
+
+    <!-- 根据应用组件来调整你的内容 -->
+    <MMain>
+        <!-- 给应用提供合适的间距 -->
+        <MContainer Fluid>
+            @Body
+            <FloatTool />
+        </MContainer>
+    </MMain>
+</MApp>
+
+
+
+
+@code {
+    bool drawer;
+    StringNumber group;
+}
+

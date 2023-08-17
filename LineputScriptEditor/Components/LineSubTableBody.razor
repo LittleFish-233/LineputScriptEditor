@@ -1,0 +1,75 @@
+﻿
+<tr @key="_name+_value">
+    <td>@_name</td>
+    <td>@_value</td>
+    <td>
+        <MasaButton OnClick="OnEdit" Icon="mdi-pencil" Color="success" />
+        <MasaButton OnClick="OnDelete" Icon="mdi-trash-can" Color="error" />
+    </td>
+</tr>
+
+<LineSubDialog @ref="_lineSubDialog" SubChanged="LineSubChanged" />
+
+@code {
+
+    [Parameter]
+    public ISub Sub { get; set; }
+
+    [Parameter]
+    public EventCallback<ISub> SubChanged { get; set; }
+    [Parameter]
+    public EventCallback<ISub> SubDeleted { get; set; }
+
+    LineSubDialog _lineSubDialog;
+    string _value;
+    string _name;
+
+    bool _selected;
+
+    public void Refresh()
+    {
+        if(Sub!=null)
+        {
+            _value = Sub.GetString();
+            _name = Sub.Name;
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        Refresh();
+    }
+
+    public async Task NameChanged(string name)
+    {
+        _name = name;
+        Sub.Name = name;
+        await SubChanged.InvokeAsync();
+    }
+
+    public async Task ValueChanged(string value)
+    {
+        _value = value;
+        Sub.SetString(value);
+        await SubChanged.InvokeAsync();
+    }
+
+    public void LineSubChanged()
+    {
+        Refresh();
+        StateHasChanged();
+    }
+
+    public void OnEdit()
+    {
+        if(_lineSubDialog!=null)
+        {
+            _lineSubDialog.Refresh(Sub);
+        }
+    }
+
+    public async Task OnDelete()
+    {
+        await SubDeleted.InvokeAsync(Sub);
+    }
+}
