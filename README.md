@@ -20,6 +20,7 @@ LPS可视化编辑器,可以更方便的编写.lps文件
 ## 项目引用
 
 MASA.Blazor: https://github.com/masastack/MASA.Blazor
+
 LinePutScript: https://github.com/LorisYounger/LinePutScript
 
 ## 版权许可
